@@ -8,12 +8,12 @@
         <language>zh-cn</language>
         <copyright>ShifanShen</copyright>
         <lastBuildDate>Tue, 24 Jun 2025 10:50:39 +0800</lastBuildDate><atom:link href="https://ShifanShen.github.io/categories/hugo/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>用Hugo快速部署GihubPages个人博客</title>
-        <link>https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/</link>
+        <title>基于Hugo快速部署GihubPages个人博客</title>
+        <link>https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/</link>
         <pubDate>Tue, 24 Jun 2025 10:50:39 +0800</pubDate>
         
-        <guid>https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/</guid>
-        <description>&lt;img src="https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750743414496.png" alt="Featured image of post 用Hugo快速部署GihubPages个人博客" /&gt;&lt;h2 id=&#34;hugo是什么&#34;&gt;Hugo是什么？
+        <guid>https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/</guid>
+        <description>&lt;img src="https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750743414496.png" alt="Featured image of post 基于Hugo快速部署GihubPages个人博客" /&gt;&lt;h2 id=&#34;hugo是什么&#34;&gt;Hugo是什么？
 &lt;/h2&gt;&lt;p&gt;Hugo是由Go编写的快速现代静态网站生成器，旨在让网站创建变得有趣。&lt;/p&gt;
 &lt;p&gt;Hugo是一个通用的网站框架。从技术角度来说，Hugo是一个静态生成器。与每个访问者请求动态构建页面的系统不同，Hugo在创建或更新内容时构建页面。由于网站被查看的频率远远多于编辑的频率，Hugo旨在为您的网站最终用户提供最佳的查看体验，并为网站作者提供理想的编写体验。&lt;/p&gt;
 &lt;p&gt;使用Hugo构建的网站非常快速和安全。Hugo网站可以托管在任何地方，包括Netlify，Heroku，GoDaddy，DreamHost，GitHub Pages，GitLab Pages，Surge，Firebase，Google Cloud Storage，Amazon S3，Rackspace，Azure和CloudFront，并且与CDN配合良好。Hugo网站运行无需数据库或Ruby、Python或PHP等昂贵运行时的依赖。&lt;/p&gt;
@@ -25,10 +25,10 @@
     &gt;Hugo官网&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Github地址:&lt;a class=&#34;link&#34; href=&#34;https://github.com/gohugoio/hugo&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;gohugoio/hugo&lt;/a&gt;
-&lt;img src=&#34;https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740692546.png&#34;
+&lt;img src=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740692546.png&#34;
 	width=&#34;1675&#34;
 	height=&#34;1111&#34;
-	srcset=&#34;https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740692546_hu_538dd2fdec70e693.png 480w, https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740692546_hu_c3d72649c7491488.png 1024w&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740692546_hu_538dd2fdec70e693.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740692546_hu_c3d72649c7491488.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -45,10 +45,10 @@
     &gt;&lt;strong&gt;Git官网https://cdn.jsdelivr.net/gh/Sazerac-kk/pictures/img/image1.png&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;点击 &lt;strong&gt;Download for Windows&lt;/strong&gt; 按照指引安装即可。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740621782.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740621782.png&#34;
 	width=&#34;1383&#34;
 	height=&#34;935&#34;
-	srcset=&#34;https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740621782_hu_9897c763c4607a15.png 480w, https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740621782_hu_5050a397e3afdb5a.png 1024w&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740621782_hu_9897c763c4607a15.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740621782_hu_5050a397e3afdb5a.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -62,10 +62,10 @@
 &lt;/h3&gt;&lt;p&gt;解压 &lt;code&gt;hugo_extended_0.134.2_windows-amd64.zip&lt;/code&gt;文件，里面包含一个 &lt;code&gt;hugo.exe &lt;/code&gt; 可将其添加至环境变量..&lt;/p&gt;
 &lt;p&gt;点击进入并cmd打开命令行窗口，输入 &lt;code&gt;hugo new site xxxx&lt;/code&gt;创建文件&lt;/p&gt;
 &lt;p&gt;显示如下界面创建成功：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740853996.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740853996.png&#34;
 	width=&#34;1785&#34;
 	height=&#34;583&#34;
-	srcset=&#34;https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740853996_hu_a1b68dd130f447b6.png 480w, https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740853996_hu_44a69c303cb7c484.png 1024w&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740853996_hu_a1b68dd130f447b6.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740853996_hu_44a69c303cb7c484.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -75,10 +75,10 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;在命令行中切换到已创建好的 &lt;code&gt;dev&lt;/code&gt;文件夹，输入 &lt;code&gt;hugo server -D&lt;/code&gt;，运行成功出现以下界面：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740988592.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740988592.png&#34;
 	width=&#34;1727&#34;
 	height=&#34;1083&#34;
-	srcset=&#34;https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740988592_hu_af1061f40ce5297.png 480w, https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740988592_hu_bf33f0df01756335.png 1024w&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740988592_hu_af1061f40ce5297.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740988592_hu_bf33f0df01756335.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -90,10 +90,10 @@
 &lt;p&gt;打开浏览器输入 &lt;code&gt;http://localhost:1313/&lt;/code&gt;出现hugo即表示搭建成功&lt;/p&gt;
 &lt;h3 id=&#34;下载主题&#34;&gt;下载主题
 &lt;/h3&gt;&lt;p&gt;在hugo官网中提供了很多主题demo和地址&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741083101.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741083101.png&#34;
 	width=&#34;2421&#34;
 	height=&#34;1459&#34;
-	srcset=&#34;https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741083101_hu_8488b9ab0c70780d.png 480w, https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741083101_hu_ce31fa9a51ffc455.png 1024w&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741083101_hu_8488b9ab0c70780d.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741083101_hu_ce31fa9a51ffc455.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -104,10 +104,10 @@
 &gt;&lt;/p&gt;
 &lt;p&gt;挑选喜欢的主题，并且下载，本文主题选用的是hugo-theme-stack，通过github下载（或者git add submodule）&lt;/p&gt;
 &lt;p&gt;将文件解压存储在 &lt;code&gt;dev\themes&lt;/code&gt;文件下，并将 &lt;code&gt;exampleSite&lt;/code&gt;样例数据中的 &lt;code&gt;Content&lt;/code&gt; 和 &lt;code&gt;hugo.yaml&lt;/code&gt; 复制到主文件夹中，并删掉 &lt;code&gt;hugo.toml&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741188559.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741188559.png&#34;
 	width=&#34;1111&#34;
 	height=&#34;915&#34;
-	srcset=&#34;https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741188559_hu_57fb412b2b707ef5.png 480w, https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741188559_hu_83877d5eb9468451.png 1024w&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741188559_hu_57fb412b2b707ef5.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741188559_hu_83877d5eb9468451.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -117,10 +117,10 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;修改hugo.yaml配置文件，自定义页面配置等信息&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741233760.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741233760.png&#34;
 	width=&#34;1771&#34;
 	height=&#34;909&#34;
-	srcset=&#34;https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741233760_hu_3ef0da832268f40d.png 480w, https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741233760_hu_13a357e10b078beb.png 1024w&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741233760_hu_3ef0da832268f40d.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741233760_hu_13a357e10b078beb.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -139,10 +139,10 @@
 &lt;li&gt;前往 &lt;code&gt;settings -&amp;gt; Developer Settings -&amp;gt; Personal access tokens&lt;/code&gt;，创建一个token(classic)。&lt;/li&gt;
 &lt;li&gt;token选择永不过期，并且勾选&lt;strong&gt;repo&lt;/strong&gt;和&lt;strong&gt;workflow&lt;/strong&gt;选项。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741646620.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741646620.png&#34;
 	width=&#34;1383&#34;
 	height=&#34;321&#34;
-	srcset=&#34;https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741646620_hu_dc69b39ed43cffe2.png 480w, https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741646620_hu_94565756185908ef.png 1024w&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741646620_hu_dc69b39ed43cffe2.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741646620_hu_94565756185908ef.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -154,10 +154,10 @@
 &lt;ul&gt;
 &lt;li&gt;为保证安全，将生成的token，保存的仓库的变量中，前往 &lt;code&gt;Settings -&amp;gt; Secrets and variables -&amp;gt; Actions&lt;/code&gt;中设置。（ &lt;strong&gt;注意：token只能显示一次，可事先保存&lt;/strong&gt; ）&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741659080.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741659080.png&#34;
 	width=&#34;1347&#34;
 	height=&#34;489&#34;
-	srcset=&#34;https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741659080_hu_85be8e98ae5ded67.png 480w, https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741659080_hu_23c78bdc6933abb2.png 1024w&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741659080_hu_85be8e98ae5ded67.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741659080_hu_23c78bdc6933abb2.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -166,10 +166,10 @@
 		data-flex-basis=&#34;661px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741673895.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741673895.png&#34;
 	width=&#34;1341&#34;
 	height=&#34;747&#34;
-	srcset=&#34;https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741673895_hu_efb1b3d0fdbb3606.png 480w, https://ShifanShen.github.io/p/%E7%94%A8hugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741673895_hu_b367b7499357b63f.png 1024w&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741673895_hu_efb1b3d0fdbb3606.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741673895_hu_b367b7499357b63f.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
