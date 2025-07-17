@@ -7,7 +7,202 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>ShifanShen</copyright>
-        <lastBuildDate>Tue, 24 Jun 2025 10:50:39 +0800</lastBuildDate><atom:link href="https://ShifanShen.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Thu, 17 Jul 2025 18:02:39 +0800</lastBuildDate><atom:link href="https://ShifanShen.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>通过PARA构建你的第二大脑</title>
+        <link>https://ShifanShen.github.io/p/%E9%80%9A%E8%BF%87para%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%BA%8C%E5%A4%A7%E8%84%91/</link>
+        <pubDate>Thu, 17 Jul 2025 18:02:39 +0800</pubDate>
+        
+        <guid>https://ShifanShen.github.io/p/%E9%80%9A%E8%BF%87para%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%BA%8C%E5%A4%A7%E8%84%91/</guid>
+        <description>&lt;img src="https://ShifanShen.github.io/p/%E9%80%9A%E8%BF%87para%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%BA%8C%E5%A4%A7%E8%84%91/image/index/buildyoursecondbrain.png" alt="Featured image of post 通过PARA构建你的第二大脑" /&gt;&lt;blockquote&gt;
+&lt;p&gt;我们所说的“管理”很多时候实质上是伪装成的拖延。我们告诉自己我们正在“准备”或者“做研究”，假装这是进步。——Tiago Forte&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;从小到大，我们尝试过各种各样的笔记方法，比如在课堂上圈画、批注、做笔记。但很少有人会在笔记完成后，进一步思考如何将这些内容系统化、框架化，最终形成一个能够快速检索所需信息的知识体系。&lt;/p&gt;
+&lt;p&gt;因此，当我们面对零散的知识点时，往往难以将其与已有知识建立联系，笔记也就失去了“记录”与“复用”的意义。&lt;/p&gt;
+&lt;h1 id=&#34;如何做笔记code法则&#34;&gt;如何做笔记：CODE法则
+&lt;/h1&gt;&lt;p&gt;在用过市面上流行的各种各样的笔记软件，如notion，思源笔记，语雀，wolai等等新兴的笔记软件后，我还是回归到了markdown + sync 同步的笔记逻辑（用了notion已经一年左右）。&lt;/p&gt;
+&lt;p&gt;这些软件all in one的理念确实能够将笔记进行模块化的管理，进行精美的编排。但我们在设计每个页面的排版，挑选图标和合适的壁纸，最后得到的结果与一个txt文档相比对于信息管理来说并无差别。&lt;/p&gt;
+&lt;p&gt;因此，之所以舍弃notion是因为发掘自己陷入了这种“让笔记更好看”的困境，而不是着重于去管理自己的知识体系，确实本末倒置了。&lt;/p&gt;
+&lt;p&gt;笔记本质上就是整合信息并进行输出的过程，因此强调如何“记”并不重要，重要的是“记”之后对于信息的管理有无帮助。&lt;/p&gt;
+&lt;p&gt;《打造你的第二大脑》中Tiago Forte提出了&lt;strong&gt;CODE信息管理法则&lt;/strong&gt;，他将CODE法则分为四步：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;抓取&lt;/strong&gt;（capture）：抓住&lt;strong&gt;此刻&lt;/strong&gt;（强调即时性）对你来说有价值的信息&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;组织&lt;/strong&gt;（organize）：把你记录的想法加以整理，形成能行动或者可执行的形式&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;提炼&lt;/strong&gt;（distill）：提高信息的可见性， 找到所记录的事情、想法本身的核心思想&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;表达&lt;/strong&gt;（express）：创造过程中的最后一步，利用你记录的事情和想法，产生出经过你思考和理解的知识，并表达和分享出来&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1 id=&#34;卢曼的卡片盒笔记法&#34;&gt;卢曼的卡片盒笔记法
+&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;尼克拉斯·卢曼（1927年12月8日-1998年11月6日），德国当代杰出社会学家之一，他发展了社会系统论，也是一位“宏大理论”的推崇者，主张把社会上纷繁复杂的现象全部纳入到一种的理论框架去解释。&lt;br&gt;
+主要著作《社会的社会》 、《社会的艺术》、《社会的法律》。&lt;br&gt;
+他自创的一套笔记方法，利用这套方法，他一生积累了90000个知识卡片，写了58本书和其他大量出版物。&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;卡片盒笔记法的工作流贯彻了&lt;strong&gt;CODE信息管理法则&lt;/strong&gt;，比起其它笔记方式最大的不同有2点：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;对笔记进行深度加工&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;不按主题分类&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;卡片盒笔记法分为三个部分：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Fleeting Notes&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Fleeting Notes是你的Permanent Notes的其中一个资料来源&lt;/li&gt;
+&lt;li&gt;所谓Fleeting（闪念），就是你每天比较有意思的一些想法、念头，来自日常或者阅读，不管是什么请先记录下来。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;最简单的方式，就是把微信的文件传输窗口当作你的记录本&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;当闪念笔记被整理完成后，就可以删除了，属于日抛型&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Literature Notes&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Literature Notes文献笔记是Permanent Notes的第二个来源，也是一个单独的资料库；&lt;/li&gt;
+&lt;li&gt;无论你读什么，都要做笔记，写下你不想忘记的内容，或者你认为可能会在自己的思考或写作中使用的内容&lt;/li&gt;
+&lt;li&gt;**文献笔记要非常简短，精心选择，并使用自己语言记录，对引文要格外挑剔，不要只是抄写，而不去真正理解其含义。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Permanent Notes&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;将Fleeting Notes和Literature Notes思考后加工整理为永久的笔记，可以直接成为你知识库中的“cards”，也就是卢曼卡片盒笔记法的最后一步。&lt;/li&gt;
+&lt;li&gt;需要注意只有有价值的想法或知识才能被加工成Permanent Notes，否则可以直接丢弃，以防污染知识库&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;卢曼卡片笔记法的核心就是：&lt;strong&gt;自己的思考&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;不论是闪念、文献笔记，卢曼先生都强调自己的思考最重要，只是摘录是&lt;strong&gt;没有价值的&lt;/strong&gt;。整理永久笔记和编号入库更是全局思考的一个过程，用卡片笔记的形式实现知识复利。&lt;/p&gt;
+&lt;h1 id=&#34;para法则4个类别涵盖你的整个生活&#34;&gt;PARA法则：4个类别涵盖你的整个生活
+&lt;/h1&gt;&lt;p&gt;PARA建立在一个简单的发现之上：&lt;strong&gt;你生活中的所有信息实际上只包含四个类别&lt;/strong&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Project&lt;/strong&gt;：短期工作或生活中你现在正在进行的事项&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Area&lt;/strong&gt;：表示你在当前生活或者工作阶段要涉及的「长期领域」，它跟 Projects 的区别在于期限的长短&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Resource&lt;/strong&gt;：在短期或者长期，可能用得上的事项，也可以包括你的兴趣&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Archive&lt;/strong&gt;：来自其他三个类别的非活动项目，或者已经归档的事项&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E9%80%9A%E8%BF%87para%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%BA%8C%E5%A4%A7%E8%84%91/image/index/20250717164006.png&#34;
+	width=&#34;1884&#34;
+	height=&#34;1503&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/%E9%80%9A%E8%BF%87para%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%BA%8C%E5%A4%A7%E8%84%91/image/index/20250717164006_hu_4dbfc17bf8f87f10.png 480w, https://ShifanShen.github.io/p/%E9%80%9A%E8%BF%87para%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%BA%8C%E5%A4%A7%E8%84%91/image/index/20250717164006_hu_889b2cc6931c4024.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;125&#34;
+		data-flex-basis=&#34;300px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;根据上图&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;我们记录（Capture）能让我们产生共鸣的、有意义的想法和事情&lt;/li&gt;
+&lt;li&gt;随后，我们通过 PARA 的指导对 Capture 的想法和事情加以整理（Organize）&lt;/li&gt;
+&lt;li&gt;PARA 能描述一个事情的生命周期的流向：
+&lt;ul&gt;
+&lt;li&gt;如果它是你本身短期内专注的，那么它属于 Projects 类别&lt;/li&gt;
+&lt;li&gt;而如果在某个时间段已经完成了这个事情，那么你可以根据它的性质，移动到 Areas 或者 Resources&lt;/li&gt;
+&lt;li&gt;如果这个事情本身中途废弃了，那么你可以移动到 Archives 里进行归档 —— 而它的生命周期定义，完全是你个人根据 PARA 的指导来进行的&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;如何运用para去管理笔记&#34;&gt;如何运用PARA去管理笔记
+&lt;/h1&gt;&lt;p&gt;PARA体系的核心在于“分类即管理”，它让我们能够清晰地梳理和定位所有信息。无论你使用的是Obsidian、Notion、思源笔记，还是最简单的Markdown+同步方案，都可以灵活应用PARA法则。下面详细介绍如何在实际笔记管理中落地PARA体系：&lt;/p&gt;
+&lt;h3 id=&#34;1-projects项目聚焦当前目标&#34;&gt;1. Projects（项目）：聚焦当前目标
+&lt;/h3&gt;&lt;p&gt;Projects是你当前正在推进的具体事项，比如“撰写一份报告”、“完成某个课程”、“开发一个小工具”等。&lt;/p&gt;
+&lt;p&gt;在笔记软件中，你可以为每个项目建立一个独立的文件夹或页面，专门收集与该项目相关的所有资料、进度、想法和待办事项。&lt;/p&gt;
+&lt;p&gt;操作建议：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;每当启动一个新项目，立即在Projects下新建对应的笔记或文件夹。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;项目结束后，将相关资料归档到Archives，保持Projects区域的简洁和聚焦。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;只保留当前活跃的项目，避免信息堆积。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-areas领域长期关注与持续积累&#34;&gt;2. Areas（领域）：长期关注与持续积累
+&lt;/h3&gt;&lt;p&gt;Areas代表你在生活或工作中需要长期维护和关注的领域，比如“健康管理”、“个人成长”、“编程技能”、“财务规划”等。&lt;/p&gt;
+&lt;p&gt;这些领域不像项目那样有明确的起止时间，而是需要你持续投入和定期回顾。&lt;/p&gt;
+&lt;p&gt;操作建议：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;为每个重要领域建立独立的Area文件夹或页面，收集相关的知识、经验、流程和标准。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;定期回顾和更新Area内容，确保其与当前阶段的目标和需求相符。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;例如，“Python编程”可以作为一个Area，持续积累学习笔记、代码片段和心得体会。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-resources资源知识与灵感的仓库&#34;&gt;3. Resources（资源）：知识与灵感的仓库
+&lt;/h3&gt;&lt;p&gt;Resources是你在学习、工作或生活中收集的各种资料、灵感和参考信息，比如书籍摘要、文章剪藏、工具推荐、行业报告等。&lt;/p&gt;
+&lt;p&gt;这些内容可能暂时用不到，但未来某个时刻会成为你解决问题的关键资源。&lt;/p&gt;
+&lt;p&gt;操作建议：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;建立Resources文件夹，按照主题或类型进一步细分（如“阅读摘录”、“工具清单”、“行业趋势”等）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;资源类笔记不必过度整理，重在收集和便于检索。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;定期浏览Resources，激发新思路或为项目和领域提供支持。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-archives归档有序沉淀随时可查&#34;&gt;4. Archives（归档）：有序沉淀，随时可查
+&lt;/h3&gt;&lt;p&gt;Archives是所有已完成、暂停或不再活跃的信息的归宿。&lt;/p&gt;
+&lt;p&gt;无论是完成的项目、阶段性领域资料，还是过时的资源，都可以归档，既避免信息干扰，又便于日后查找。&lt;/p&gt;
+&lt;p&gt;操作建议：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;定期将不再活跃的项目、领域或资源移动到Archives。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;保持Archives结构清晰，方便未来检索和回顾。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;归档不是删除，而是有序沉淀，帮助你建立个人知识的历史库。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;实操举例obsidian中的para体系&#34;&gt;实操举例：Obsidian中的PARA体系
+&lt;/h3&gt;&lt;p&gt;以Obsidian为例，我通常会建立如下文件夹结构：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;/Inbox
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;/Projects
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;/Areas
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;/Resources
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;/Archives
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;Inbox：临时收集灵感、想法和待整理的信息。每天或每周定期清理，将内容归入PARA四类之一。&lt;/li&gt;
+&lt;li&gt;Projects：如“2024年年中总结”、“项目开发”等，每个项目一个子文件夹。&lt;/li&gt;
+&lt;li&gt;Areas：如“Python&amp;quot;、“编程技能”等，持续积累相关内容。&lt;/li&gt;
+&lt;li&gt;Resources：如“哲学”、“艺术”等，随时查阅。&lt;/li&gt;
+&lt;li&gt;Archives：已完成或不再活跃的内容，按时间或主题归档。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;动态调整：信息的分类不是一成不变的。随着项目推进、兴趣变化，及时调整笔记的归属，让体系始终服务于你的实际需求。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;轻量化管理：不必追求极致的整理，关键是让信息“找得到、用得上”。避免陷入“整理本身”的拖延。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;结合CODE法则：抓取（Capture）灵感后，第一时间放入Inbox，再根据内容归入Projects、Areas或Resources，最后定期归档（Archives），形成完整闭环。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;通过PARA体系，可以让笔记管理变得高效、清晰且可持续，实现构建你的“第二大脑”。&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>基于Hugo快速部署GihubPages个人博客</title>
         <link>https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/</link>
         <pubDate>Tue, 24 Jun 2025 10:50:39 +0800</pubDate>
