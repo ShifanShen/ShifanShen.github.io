@@ -280,7 +280,6 @@
     <li><a href="#环境准备">环境准备</a>
       <ol>
         <li><a href="#下载hugo">下载Hugo</a></li>
-        <li><a href="#下载hugo-1">下载Hugo</a></li>
         <li><a href="#下载git">下载git</a></li>
       </ol>
     </li>
@@ -321,7 +320,7 @@
     
     <header class="article-category">
         
-            <a href="/categories/hugo/" style="background-color: #2a9d8f; color: #fff;">
+            <a href="/categories/hugo/" >
                 Hugo
             </a>
         
@@ -378,7 +377,6 @@
 <p>使用Hugo构建的网站非常快速和安全。Hugo网站可以托管在任何地方，包括Netlify，Heroku，GoDaddy，DreamHost，GitHub Pages，GitLab Pages，Surge，Firebase，Google Cloud Storage，Amazon S3，Rackspace，Azure和CloudFront，并且与CDN配合良好。Hugo网站运行无需数据库或Ruby、Python或PHP等昂贵运行时的依赖。</p>
 <h2 id="环境准备">环境准备
 </h2><h3 id="下载hugo">下载Hugo
-</h3><h3 id="下载hugo-1">下载Hugo
 </h3><ul>
 <li>官网址：<a class="link" href="https://gohugo.io/"  target="_blank" rel="noopener"
     >Hugo官网</a></li>
@@ -496,9 +494,8 @@
 <li>新建仓库，命名要用 <code>{github用户名}.github.io</code>，如果这是你搭建的第一个博客，这一步最好在前面用自己的用户名，这会避免很多Bug（创建后不需要动了）</li>
 <li>Github上面重新建一个仓库，可以任意命名，用于存放Hugo的主文件，可以设置为 <code>private</code></li>
 <li>前往 <code>settings -&gt; Developer Settings -&gt; Personal access tokens</code>，创建一个token(classic)。</li>
-<li>token选择永不过期，并且勾选<strong>repo</strong>和<strong>workflow</strong>选项。</li>
-</ul>
-<p><img src="/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741646620.png"
+<li>token选择永不过期，并且勾选<strong>repo</strong>和<strong>workflow</strong>选项。
+<img src="/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741646620.png"
 	width="1383"
 	height="321"
 	srcset="/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741646620_hu_dc69b39ed43cffe2.png 480w, /p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741646620_hu_94565756185908ef.png 1024w"
@@ -509,7 +506,8 @@
 		data-flex-grow="430"
 		data-flex-basis="1034px"
 	
-></p>
+></li>
+</ul>
 <ul>
 <li>为保证安全，将生成的token，保存的仓库的变量中，前往 <code>Settings -&gt; Secrets and variables -&gt; Actions</code>中设置。（ <strong>注意：token只能显示一次，可事先保存</strong> ）</li>
 </ul>

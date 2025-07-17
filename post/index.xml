@@ -19,7 +19,6 @@
 &lt;p&gt;使用Hugo构建的网站非常快速和安全。Hugo网站可以托管在任何地方，包括Netlify，Heroku，GoDaddy，DreamHost，GitHub Pages，GitLab Pages，Surge，Firebase，Google Cloud Storage，Amazon S3，Rackspace，Azure和CloudFront，并且与CDN配合良好。Hugo网站运行无需数据库或Ruby、Python或PHP等昂贵运行时的依赖。&lt;/p&gt;
 &lt;h2 id=&#34;环境准备&#34;&gt;环境准备
 &lt;/h2&gt;&lt;h3 id=&#34;下载hugo&#34;&gt;下载Hugo
-&lt;/h3&gt;&lt;h3 id=&#34;下载hugo-1&#34;&gt;下载Hugo
 &lt;/h3&gt;&lt;ul&gt;
 &lt;li&gt;官网址：&lt;a class=&#34;link&#34; href=&#34;https://gohugo.io/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Hugo官网&lt;/a&gt;&lt;/li&gt;
@@ -137,9 +136,8 @@
 &lt;li&gt;新建仓库，命名要用 &lt;code&gt;{github用户名}.github.io&lt;/code&gt;，如果这是你搭建的第一个博客，这一步最好在前面用自己的用户名，这会避免很多Bug（创建后不需要动了）&lt;/li&gt;
 &lt;li&gt;Github上面重新建一个仓库，可以任意命名，用于存放Hugo的主文件，可以设置为 &lt;code&gt;private&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;前往 &lt;code&gt;settings -&amp;gt; Developer Settings -&amp;gt; Personal access tokens&lt;/code&gt;，创建一个token(classic)。&lt;/li&gt;
-&lt;li&gt;token选择永不过期，并且勾选&lt;strong&gt;repo&lt;/strong&gt;和&lt;strong&gt;workflow&lt;/strong&gt;选项。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741646620.png&#34;
+&lt;li&gt;token选择永不过期，并且勾选&lt;strong&gt;repo&lt;/strong&gt;和&lt;strong&gt;workflow&lt;/strong&gt;选项。
+&lt;img src=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741646620.png&#34;
 	width=&#34;1383&#34;
 	height=&#34;321&#34;
 	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741646620_hu_dc69b39ed43cffe2.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741646620_hu_94565756185908ef.png 1024w&#34;
@@ -150,7 +148,8 @@
 		data-flex-grow=&#34;430&#34;
 		data-flex-basis=&#34;1034px&#34;
 	
-&gt;&lt;/p&gt;
+&gt;&lt;/li&gt;
+&lt;/ul&gt;
 &lt;ul&gt;
 &lt;li&gt;为保证安全，将生成的token，保存的仓库的变量中，前往 &lt;code&gt;Settings -&amp;gt; Secrets and variables -&amp;gt; Actions&lt;/code&gt;中设置。（ &lt;strong&gt;注意：token只能显示一次，可事先保存&lt;/strong&gt; ）&lt;/li&gt;
 &lt;/ul&gt;
