@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="zh-cn" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content=" ">
-<title>通过PARA构建你的第二大脑</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="python项目结构发展 go与rust的项目结构都简洁得仿佛自带强迫症，而python恰恰相反，它在诞生之初根本没有考虑过工程项目这回事。所以早期的python项目十分放飞自我，好在官方一直持续打补丁，和一些早期python好的项目结构十分相似。\n">
+<title>Uv：一个用Rust编写的极速Python包和项目管理工具</title>
 
-<link rel='canonical' href='https://ShifanShen.github.io/p/%E9%80%9A%E8%BF%87para%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%BA%8C%E5%A4%A7%E8%84%91/'>
+<link rel='canonical' href='https://ShifanShen.github.io/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/'>
 
-<link rel="stylesheet" href="/scss/style.min.6a692fd055deae459f2a9767f57f3855ba80cafd5041317f24f7360f6ca47cdf.css"><meta property='og:title' content="通过PARA构建你的第二大脑">
-<meta property='og:description' content=" ">
-<meta property='og:url' content='https://ShifanShen.github.io/p/%E9%80%9A%E8%BF%87para%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%BA%8C%E5%A4%A7%E8%84%91/'>
+<link rel="stylesheet" href="/scss/style.min.6a692fd055deae459f2a9767f57f3855ba80cafd5041317f24f7360f6ca47cdf.css"><meta property='og:title' content="Uv：一个用Rust编写的极速Python包和项目管理工具">
+<meta property='og:description' content="python项目结构发展 go与rust的项目结构都简洁得仿佛自带强迫症，而python恰恰相反，它在诞生之初根本没有考虑过工程项目这回事。所以早期的python项目十分放飞自我，好在官方一直持续打补丁，和一些早期python好的项目结构十分相似。\n">
+<meta property='og:url' content='https://ShifanShen.github.io/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/'>
 <meta property='og:site_name' content='Stan1ey&#39;s Blog'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-07-17T18:02:39&#43;08:00'/><meta property='article:modified_time' content='2025-07-17T18:02:39&#43;08:00'/><meta property='og:image' content='https://ShifanShen.github.io/p/%E9%80%9A%E8%BF%87para%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%BA%8C%E5%A4%A7%E8%84%91/image/index/buildyoursecondbrain.png' />
-<meta name="twitter:title" content="通过PARA构建你的第二大脑">
-<meta name="twitter:description" content=" "><meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content='https://ShifanShen.github.io/p/%E9%80%9A%E8%BF%87para%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%BA%8C%E5%A4%A7%E8%84%91/image/index/buildyoursecondbrain.png' />
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-11-24T21:57:03&#43;08:00'/><meta property='article:modified_time' content='2025-11-24T21:57:03&#43;08:00'/><meta property='og:image' content='https://ShifanShen.github.io/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/image/main.png' />
+<meta name="twitter:title" content="Uv：一个用Rust编写的极速Python包和项目管理工具">
+<meta name="twitter:description" content="python项目结构发展 go与rust的项目结构都简洁得仿佛自带强迫症，而python恰恰相反，它在诞生之初根本没有考虑过工程项目这回事。所以早期的python项目十分放飞自我，好在官方一直持续打补丁，和一些早期python好的项目结构十分相似。\n"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://ShifanShen.github.io/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/image/main.png' />
     <link rel="shortcut icon" href="/static/favicon.ico" />
 
     </head>
@@ -276,16 +276,14 @@
         <div class="widget--toc">
             <nav id="TableOfContents">
   <ol>
-    <li><a href="#如何做笔记code法则">如何做笔记：CODE法则</a></li>
-    <li><a href="#卢曼的卡片盒笔记法">卢曼的卡片盒笔记法</a></li>
-    <li><a href="#para法则4个类别涵盖你的整个生活">PARA法则：4个类别涵盖你的整个生活</a></li>
-    <li><a href="#如何运用para去管理笔记">如何运用PARA去管理笔记</a>
+    <li>
       <ol>
-        <li><a href="#1-projects项目聚焦当前目标">1. Projects（项目）：聚焦当前目标</a></li>
-        <li><a href="#2-areas领域长期关注与持续积累">2. Areas（领域）：长期关注与持续积累</a></li>
-        <li><a href="#3-resources资源知识与灵感的仓库">3. Resources（资源）：知识与灵感的仓库</a></li>
-        <li><a href="#4-archives归档有序沉淀随时可查">4. Archives（归档）：有序沉淀，随时可查</a></li>
-        <li><a href="#实操举例obsidian中的para体系">实操举例：Obsidian中的PARA体系</a></li>
+        <li><a href="#虚拟环境">虚拟环境</a></li>
+        <li><a href="#虚拟环境的底层原理">虚拟环境的底层原理</a></li>
+        <li><a href="#环境复现的问题">环境复现的问题</a></li>
+        <li><a href="#pyprojecttoml">pyproject.toml</a></li>
+        <li><a href="#uv">uv</a></li>
+        <li><a href="#通过uv进行项目管理">通过uv进行项目管理</a></li>
       </ol>
     </li>
   </ol>
@@ -302,13 +300,13 @@
     <article class="has-image main-article">
     <header class="article-header">
         <div class="article-image">
-            <a href="/p/%E9%80%9A%E8%BF%87para%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%BA%8C%E5%A4%A7%E8%84%91/">
-                <img src="/p/%E9%80%9A%E8%BF%87para%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%BA%8C%E5%A4%A7%E8%84%91/image/index/buildyoursecondbrain_hu_4346e09030133acc.png"
-                        srcset="/p/%E9%80%9A%E8%BF%87para%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%BA%8C%E5%A4%A7%E8%84%91/image/index/buildyoursecondbrain_hu_4346e09030133acc.png 800w, /p/%E9%80%9A%E8%BF%87para%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%BA%8C%E5%A4%A7%E8%84%91/image/index/buildyoursecondbrain_hu_ac695a49ac319b11.png 1600w"
+            <a href="/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/">
+                <img src="/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/image/main_hu_be1637ae4b252630.png"
+                        srcset="/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/image/main_hu_be1637ae4b252630.png 800w, /p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/image/main_hu_5c012f45642ce2f8.png 1600w"
                         width="800" 
-                        height="300" 
+                        height="445" 
                         loading="lazy"
-                        alt="Featured image of post 通过PARA构建你的第二大脑" />
+                        alt="Featured image of post Uv：一个用Rust编写的极速Python包和项目管理工具" />
                 
             </a>
         </div>
@@ -319,13 +317,9 @@
 
     <div class="article-title-wrapper">
         <h2 class="article-title">
-            <a href="/p/%E9%80%9A%E8%BF%87para%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%BA%8C%E5%A4%A7%E8%84%91/">通过PARA构建你的第二大脑</a>
+            <a href="/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/">Uv：一个用Rust编写的极速Python包和项目管理工具</a>
         </h2>
     
-        
-        <h3 class="article-subtitle">
-             
-        </h3>
         
     </div>
 
@@ -345,7 +339,7 @@
   <path d="M3 11h16" />
   <path d="M18 16.496v1.504l1 1" />
 </svg>
-                <time class="article-time--published">2025-07-17</time>
+                <time class="article-time--published">2025-11-24</time>
             </div>
         
 
@@ -361,195 +355,92 @@
     <section class="article-content">
     
     
-    <blockquote>
-<p>我们所说的“管理”很多时候实质上是伪装成的拖延。我们告诉自己我们正在“准备”或者“做研究”，假装这是进步。——Tiago Forte</p>
-</blockquote>
-<p>从小到大，我们尝试过各种各样的笔记方法，比如在课堂上圈画、批注、做笔记。但很少有人会在笔记完成后，进一步思考如何将这些内容系统化、框架化，最终形成一个能够快速检索所需信息的知识体系。</p>
-<p>因此，当我们面对零散的知识点时，往往难以将其与已有知识建立联系，笔记也就失去了“记录”与“复用”的意义。</p>
-<h2 id="如何做笔记code法则">如何做笔记：CODE法则
-</h2><p>在用过市面上流行的各种各样的笔记软件，如notion，思源笔记，语雀，wolai等等新兴的笔记软件后，我还是回归到了markdown + sync 同步的笔记逻辑（用了notion已经一年左右）。</p>
-<p>这些软件all in one的理念确实能够将笔记进行模块化的管理，进行精美的编排。但我们在设计每个页面的排版，挑选图标和合适的壁纸，最后得到的结果与一个txt文档相比对于信息管理来说并无差别。</p>
-<p>因此，之所以舍弃notion是因为发掘自己陷入了这种“让笔记更好看”的困境，而不是着重于去管理自己的知识体系，确实本末倒置了。</p>
-<p>笔记本质上就是整合信息并进行输出的过程，因此强调如何“记”并不重要，重要的是“记”之后对于信息的管理有无帮助。</p>
-<p>《打造你的第二大脑》中Tiago Forte提出了<strong>CODE信息管理法则</strong>，他将CODE法则分为四步：</p>
+    <h1 id="python项目结构发展">python项目结构发展
+</h1><p>go与rust的项目结构都简洁得仿佛自带强迫症，而python恰恰相反，它在诞生之初根本没有考虑过工程项目这回事。所以早期的python项目十分放飞自我，好在官方一直持续打补丁，和一些早期python好的项目结构十分相似。</p>
+<h1 id="一个现代的python项目应该如何组织">一个现代的python项目应该如何组织？
+</h1><p>现在python的项目管理基本被分成了两大流派：</p>
 <ol>
-<li><strong>抓取</strong>（capture）：抓住<strong>此刻</strong>（强调即时性）对你来说有价值的信息</li>
-<li><strong>组织</strong>（organize）：把你记录的想法加以整理，形成能行动或者可执行的形式</li>
-<li><strong>提炼</strong>（distill）：提高信息的可见性， 找到所记录的事情、想法本身的核心思想</li>
-<li><strong>表达</strong>（express）：创造过程中的最后一步，利用你记录的事情和想法，产生出经过你思考和理解的知识，并表达和分享出来</li>
+<li>
+<p>conda：由Anaconda公司提供的一个商业软件，pixi也属于conda宇宙</p>
+<p>有自己的配置文件，软件仓库，就连python解释器都是它自己编译的</p>
+</li>
+<li>
+<p>官方python体系</p>
+</li>
 </ol>
-<h2 id="卢曼的卡片盒笔记法">卢曼的卡片盒笔记法
-</h2><blockquote>
-<p>尼克拉斯·卢曼（1927年12月8日-1998年11月6日），德国当代杰出社会学家之一，他发展了社会系统论，也是一位“宏大理论”的推崇者，主张把社会上纷繁复杂的现象全部纳入到一种的理论框架去解释。<br>
-主要著作《社会的社会》 、《社会的艺术》、《社会的法律》。<br>
-他自创的一套笔记方法，利用这套方法，他一生积累了90000个知识卡片，写了58本书和其他大量出版物。</p>
-</blockquote>
-<p>卡片盒笔记法的工作流贯彻了<strong>CODE信息管理法则</strong>，比起其它笔记方式最大的不同有2点：</p>
+<h3 id="虚拟环境">虚拟环境
+</h3><p>当我们需要运行一个flask项目下的 <a class="link" href="http://main.py"  target="_blank" rel="noopener"
+    ><code>main.py</code></a> 文件，首先想到的就是：</p>
+<p><code>pip install flask</code></p>
+<p>pip工具会自动帮你安装最新版的flask 3.1.1，但这么做系统默认是安装到了全局的python环境，这样会带来两个问题：</p>
 <ol>
-<li><strong>对笔记进行深度加工</strong></li>
-<li><strong>不按主题分类</strong></li>
+<li>版本冲突</li>
+<li>依赖地域</li>
 </ol>
-<p>卡片盒笔记法分为三个部分：</p>
-<ul>
-<li>
-<p>Fleeting Notes</p>
-<ul>
-<li>Fleeting Notes是你的Permanent Notes的其中一个资料来源</li>
-<li>所谓Fleeting（闪念），就是你每天比较有意思的一些想法、念头，来自日常或者阅读，不管是什么请先记录下来。</li>
-<li><strong>最简单的方式，就是把微信的文件传输窗口当作你的记录本</strong></li>
-<li>当闪念笔记被整理完成后，就可以删除了，属于日抛型</li>
-</ul>
-</li>
-<li>
-<p>Literature Notes</p>
-<ul>
-<li>Literature Notes文献笔记是Permanent Notes的第二个来源，也是一个单独的资料库；</li>
-<li>无论你读什么，都要做笔记，写下你不想忘记的内容，或者你认为可能会在自己的思考或写作中使用的内容</li>
-<li>**文献笔记要非常简短，精心选择，并使用自己语言记录，对引文要格外挑剔，不要只是抄写，而不去真正理解其含义。</li>
-</ul>
-</li>
-<li>
-<p>Permanent Notes</p>
-<ul>
-<li>将Fleeting Notes和Literature Notes思考后加工整理为永久的笔记，可以直接成为你知识库中的“cards”，也就是卢曼卡片盒笔记法的最后一步。</li>
-<li>需要注意只有有价值的想法或知识才能被加工成Permanent Notes，否则可以直接丢弃，以防污染知识库</li>
-</ul>
-</li>
-</ul>
-<p>卢曼卡片笔记法的核心就是：<strong>自己的思考</strong></p>
-<p>不论是闪念、文献笔记，卢曼先生都强调自己的思考最重要，只是摘录是<strong>没有价值的</strong>。整理永久笔记和编号入库更是全局思考的一个过程，用卡片笔记的形式实现知识复利。</p>
-<h2 id="para法则4个类别涵盖你的整个生活">PARA法则：4个类别涵盖你的整个生活
-</h2><p>PARA建立在一个简单的发现之上：<strong>你生活中的所有信息实际上只包含四个类别</strong>。</p>
-<ul>
-<li><strong>Project</strong>：短期工作或生活中你现在正在进行的事项</li>
-<li><strong>Area</strong>：表示你在当前生活或者工作阶段要涉及的「长期领域」，它跟 Projects 的区别在于期限的长短</li>
-<li><strong>Resource</strong>：在短期或者长期，可能用得上的事项，也可以包括你的兴趣</li>
-<li><strong>Archive</strong>：来自其他三个类别的非活动项目，或者已经归档的事项</li>
-</ul>
-<p><img src="/p/%E9%80%9A%E8%BF%87para%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%BA%8C%E5%A4%A7%E8%84%91/image/index/20250717164006.png"
-	width="1884"
-	height="1503"
-	srcset="/p/%E9%80%9A%E8%BF%87para%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%BA%8C%E5%A4%A7%E8%84%91/image/index/20250717164006_hu_4dbfc17bf8f87f10.png 480w, /p/%E9%80%9A%E8%BF%87para%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%BA%8C%E5%A4%A7%E8%84%91/image/index/20250717164006_hu_889b2cc6931c4024.png 1024w"
+<p>——虚拟环境venv就是为了解决这两个问题而设计出来的，它会为每一个python项目提供一个干净独立的python环境</p>
+<p><code>python -m venv .venv</code></p>
+<p>这会在项目的目录下创建一个.venv的目录，这时候重新进行 <code>pip install flask</code> ，依赖包会安装到.venv/lib目录下</p>
+<h3 id="虚拟环境的底层原理">虚拟环境的底层原理
+</h3><p>虚拟环境的底层逻辑十分简单，其实就是修改了sys.path这个变量，sys.path本身是一个列表，里面记录了python在导入模块时需要搜索的一系列文件夹路径。当我们执行 <code>from flask import Flask</code> 的时候，python就会严格地检查这些路径。</p>
+<p>当虚拟环境被激活的时候，sys.path中会被添加.venv这个路径；反之，在虚拟环境没有被激活的时候，使用的就是全局路径</p>
+<h3 id="环境复现的问题">环境复现的问题
+</h3><p>当我们创建了一个python项目，如何准确地将环境分享给其他人？（总不能一行行pip install吧）</p>
+<p>最早的做法</p>
+<p>是使用 <code>pip freeze &gt; requirements.txt</code>  这个命令，会将当前环境下所有的依赖包打印到requirements.txt这个文件下。别人只需要在自己的虚拟环境下执行 <code>pip install -r requirements.txt</code> 即可安装所有的依赖</p>
+<p>但这么做有一个缺陷，pip分不清什么是项目需要的<strong>直接依赖</strong>，什么是直接依赖引入的<strong>间接依赖</strong></p>
+<p>当项目体量不大时，这么做没什么问题，但一旦项目依赖变多，情况就要失控了。</p>
+<h3 id="pyprojecttoml">pyproject.toml
+</h3><p>现在官方推荐的做法是通过pyproject.toml这一个配置文件来进行项目管理</p>
+<p><img src="/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/image/image.png"
+	width="501"
+	height="340"
+	srcset="/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/image/image_hu_db8aae54c6e5a053.png 480w, /p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/image/image_hu_4915f87ada2037e9.png 1024w"
 	loading="lazy"
 	
 	
 		class="gallery-image" 
-		data-flex-grow="125"
-		data-flex-basis="300px"
+		data-flex-grow="147"
+		data-flex-basis="353px"
 	
 ></p>
-<p>根据上图</p>
-<ul>
-<li>我们记录（Capture）能让我们产生共鸣的、有意义的想法和事情</li>
-<li>随后，我们通过 PARA 的指导对 Capture 的想法和事情加以整理（Organize）</li>
-<li>PARA 能描述一个事情的生命周期的流向：
-<ul>
-<li>如果它是你本身短期内专注的，那么它属于 Projects 类别</li>
-<li>而如果在某个时间段已经完成了这个事情，那么你可以根据它的性质，移动到 Areas 或者 Resources</li>
-<li>如果这个事情本身中途废弃了，那么你可以移动到 Archives 里进行归档 —— 而它的生命周期定义，完全是你个人根据 PARA 的指导来进行的</li>
-</ul>
-</li>
-</ul>
-<h2 id="如何运用para去管理笔记">如何运用PARA去管理笔记
-</h2><p>PARA体系的核心在于“分类即管理”，它让我们能够清晰地梳理和定位所有信息。无论你使用的是Obsidian、Notion、思源笔记，还是最简单的Markdown+同步方案，都可以灵活应用PARA法则。下面详细介绍如何在实际笔记管理中落地PARA体系：</p>
-<h3 id="1-projects项目聚焦当前目标">1. Projects（项目）：聚焦当前目标
-</h3><p>Projects是你当前正在推进的具体事项，比如“撰写一份报告”、“完成某个课程”、“开发一个小工具”等。</p>
-<p>在笔记软件中，你可以为每个项目建立一个独立的文件夹或页面，专门收集与该项目相关的所有资料、进度、想法和待办事项。</p>
-<p>操作建议：</p>
-<ul>
-<li>
-<p>每当启动一个新项目，立即在Projects下新建对应的笔记或文件夹。</p>
-</li>
-<li>
-<p>项目结束后，将相关资料归档到Archives，保持Projects区域的简洁和聚焦。</p>
-</li>
-<li>
-<p>只保留当前活跃的项目，避免信息堆积。</p>
-</li>
-</ul>
-<h3 id="2-areas领域长期关注与持续积累">2. Areas（领域）：长期关注与持续积累
-</h3><p>Areas代表你在生活或工作中需要长期维护和关注的领域，比如“健康管理”、“个人成长”、“编程技能”、“财务规划”等。</p>
-<p>这些领域不像项目那样有明确的起止时间，而是需要你持续投入和定期回顾。</p>
-<p>操作建议：</p>
-<ul>
-<li>
-<p>为每个重要领域建立独立的Area文件夹或页面，收集相关的知识、经验、流程和标准。</p>
-</li>
-<li>
-<p>定期回顾和更新Area内容，确保其与当前阶段的目标和需求相符。</p>
-</li>
-<li>
-<p>例如，“Python编程”可以作为一个Area，持续积累学习笔记、代码片段和心得体会。</p>
-</li>
-</ul>
-<h3 id="3-resources资源知识与灵感的仓库">3. Resources（资源）：知识与灵感的仓库
-</h3><p>Resources是你在学习、工作或生活中收集的各种资料、灵感和参考信息，比如书籍摘要、文章剪藏、工具推荐、行业报告等。</p>
-<p>这些内容可能暂时用不到，但未来某个时刻会成为你解决问题的关键资源。</p>
-<p>操作建议：</p>
-<ul>
-<li>
-<p>建立Resources文件夹，按照主题或类型进一步细分（如“阅读摘录”、“工具清单”、“行业趋势”等）。</p>
-</li>
-<li>
-<p>资源类笔记不必过度整理，重在收集和便于检索。</p>
-</li>
-<li>
-<p>定期浏览Resources，激发新思路或为项目和领域提供支持。</p>
-</li>
-</ul>
-<h3 id="4-archives归档有序沉淀随时可查">4. Archives（归档）：有序沉淀，随时可查
-</h3><p>Archives是所有已完成、暂停或不再活跃的信息的归宿。</p>
-<p>无论是完成的项目、阶段性领域资料，还是过时的资源，都可以归档，既避免信息干扰，又便于日后查找。</p>
-<p>操作建议：</p>
-<ul>
-<li>
-<p>定期将不再活跃的项目、领域或资源移动到Archives。</p>
-</li>
-<li>
-<p>保持Archives结构清晰，方便未来检索和回顾。</p>
-</li>
-<li>
-<p>归档不是删除，而是有序沉淀，帮助你建立个人知识的历史库。</p>
-</li>
-</ul>
-<hr>
-<h3 id="实操举例obsidian中的para体系">实操举例：Obsidian中的PARA体系
-</h3><p>以Obsidian为例，我通常会建立如下文件夹结构：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">/Inbox
-</span></span><span class="line"><span class="cl">/Projects
-</span></span><span class="line"><span class="cl">/Areas
-</span></span><span class="line"><span class="cl">/Resources
-</span></span><span class="line"><span class="cl">/Archives
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
-<li>Inbox：临时收集灵感、想法和待整理的信息。每天或每周定期清理，将内容归入PARA四类之一。</li>
-<li>Projects：如“2024年年中总结”、“项目开发”等，每个项目一个子文件夹。</li>
-<li>Areas：如“Python&quot;、“编程技能”等，持续积累相关内容。</li>
-<li>Resources：如“哲学”、“艺术”等，随时查阅。</li>
-<li>Archives：已完成或不再活跃的内容，按时间或主题归档。</li>
-</ul>
+<p>我们只需要在dependencies中添加直接依赖，再执行 <code>pip install -e.</code> 即可安装项目依赖</p>
+<h3 id="uv">uv
+</h3><p>总结一下，我们通过venv解决了环境依赖问题，用pyproject.toml管理环境中的依赖</p>
+<p>但这套纯手工的流程属实有点麻烦，因为我们不能像以前一样通过一条pip命令直接安装依赖了</p>
+<p>而是需要去pip软件仓库查询对应的软件包和版本号，并且添加到配置文件中</p>
+<p>那么python有没有提供一个软件包来解决这个问题呢？——很遗憾，并没有</p>
+<p>但有uv这样的第三方工具，可以把它理解为对venv和pip的高级封装，它在底层还是使用的pip和venv</p>
+<h3 id="通过uv进行项目管理">通过uv进行项目管理
+</h3><p>回顾一下之前管理项目的步骤</p>
 <ol>
-<li>
-<p>动态调整：信息的分类不是一成不变的。随着项目推进、兴趣变化，及时调整笔记的归属，让体系始终服务于你的实际需求。</p>
-</li>
-<li>
-<p>轻量化管理：不必追求极致的整理，关键是让信息“找得到、用得上”。避免陷入“整理本身”的拖延。</p>
-</li>
-<li>
-<p>结合CODE法则：抓取（Capture）灵感后，第一时间放入Inbox，再根据内容归入Projects、Areas或Resources，最后定期归档（Archives），形成完整闭环。</p>
-</li>
+<li><code>python -m venv .venv</code></li>
+<li><code>source .venv/bin/activate</code></li>
+<li><code>edit pyproject.toml</code></li>
+<li>在dependencies中添加flask ≥ 3.1.1</li>
+<li><code>pip install -e .</code></li>
 </ol>
-<p>通过PARA体系，可以让笔记管理变得高效、清晰且可持续，实现构建你的“第二大脑”。</p>
+<p>现在有个uv，我们只需要执行 <code>uv add flask</code> 这一条命令，就能完成所有的事情：</p>
+<ul>
+<li>自动修改pyproject.toml，将flask添加到dependencies中</li>
+<li>检查并自动创建.venv的虚拟环境</li>
+<li>把这个包和所有的间接依赖安装到虚拟环境中</li>
+</ul>
+<p>如果我是项目的协作者，从别人手里拿到这个项目，只需要执行 <code>uv sync</code> ，即可自动搭建好虚拟环境并安装好项目所需所有的依赖</p>
+<p><img src="/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/image/image2.png"
+	width="1608"
+	height="382"
+	srcset="/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/image/image2_hu_859dec80ca8e0b6f.png 480w, /p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/image/image2_hu_757592916fddcc7f.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="420"
+		data-flex-basis="1010px"
+	
+></p>
+<p>通过uv管理项目同时也能兼容传统的方法 <code>python main.py</code>，也能直接通过一条 <code>uv run main.py</code> ：</p>
+<p>它会在虚拟环境的上下文中执行命令，我们不需要手动激活环境，uv会自动找到环境并在其中启动项目。</p>
+<p>uv的核心目的就是把我们从繁琐的环境和依赖中解放出来</p>
 
 </section>
 

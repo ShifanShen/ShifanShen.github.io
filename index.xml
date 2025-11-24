@@ -7,14 +7,122 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>ShifanShen</copyright>
-        <lastBuildDate>Thu, 17 Jul 2025 18:02:39 +0800</lastBuildDate><atom:link href="https://ShifanShen.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Mon, 24 Nov 2025 21:57:03 +0800</lastBuildDate><atom:link href="https://ShifanShen.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Uv：一个用Rust编写的极速Python包和项目管理工具</title>
+        <link>https://ShifanShen.github.io/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/</link>
+        <pubDate>Mon, 24 Nov 2025 21:57:03 +0800</pubDate>
+        
+        <guid>https://ShifanShen.github.io/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/</guid>
+        <description>&lt;img src="https://ShifanShen.github.io/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/image/main.png" alt="Featured image of post Uv：一个用Rust编写的极速Python包和项目管理工具" /&gt;&lt;h1 id=&#34;python项目结构发展&#34;&gt;python项目结构发展
+&lt;/h1&gt;&lt;p&gt;go与rust的项目结构都简洁得仿佛自带强迫症，而python恰恰相反，它在诞生之初根本没有考虑过工程项目这回事。所以早期的python项目十分放飞自我，好在官方一直持续打补丁，和一些早期python好的项目结构十分相似。&lt;/p&gt;
+&lt;h1 id=&#34;一个现代的python项目应该如何组织&#34;&gt;一个现代的python项目应该如何组织？
+&lt;/h1&gt;&lt;p&gt;现在python的项目管理基本被分成了两大流派：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;conda：由Anaconda公司提供的一个商业软件，pixi也属于conda宇宙&lt;/p&gt;
+&lt;p&gt;有自己的配置文件，软件仓库，就连python解释器都是它自己编译的&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;官方python体系&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;虚拟环境&#34;&gt;虚拟环境
+&lt;/h3&gt;&lt;p&gt;当我们需要运行一个flask项目下的 &lt;a class=&#34;link&#34; href=&#34;http://main.py&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;code&gt;main.py&lt;/code&gt;&lt;/a&gt; 文件，首先想到的就是：&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;pip install flask&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;pip工具会自动帮你安装最新版的flask 3.1.1，但这么做系统默认是安装到了全局的python环境，这样会带来两个问题：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;版本冲突&lt;/li&gt;
+&lt;li&gt;依赖地域&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;——虚拟环境venv就是为了解决这两个问题而设计出来的，它会为每一个python项目提供一个干净独立的python环境&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;python -m venv .venv&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;这会在项目的目录下创建一个.venv的目录，这时候重新进行 &lt;code&gt;pip install flask&lt;/code&gt; ，依赖包会安装到.venv/lib目录下&lt;/p&gt;
+&lt;h3 id=&#34;虚拟环境的底层原理&#34;&gt;虚拟环境的底层原理
+&lt;/h3&gt;&lt;p&gt;虚拟环境的底层逻辑十分简单，其实就是修改了sys.path这个变量，sys.path本身是一个列表，里面记录了python在导入模块时需要搜索的一系列文件夹路径。当我们执行 &lt;code&gt;from flask import Flask&lt;/code&gt; 的时候，python就会严格地检查这些路径。&lt;/p&gt;
+&lt;p&gt;当虚拟环境被激活的时候，sys.path中会被添加.venv这个路径；反之，在虚拟环境没有被激活的时候，使用的就是全局路径&lt;/p&gt;
+&lt;h3 id=&#34;环境复现的问题&#34;&gt;环境复现的问题
+&lt;/h3&gt;&lt;p&gt;当我们创建了一个python项目，如何准确地将环境分享给其他人？（总不能一行行pip install吧）&lt;/p&gt;
+&lt;p&gt;最早的做法&lt;/p&gt;
+&lt;p&gt;是使用 &lt;code&gt;pip freeze &amp;gt; requirements.txt&lt;/code&gt;  这个命令，会将当前环境下所有的依赖包打印到requirements.txt这个文件下。别人只需要在自己的虚拟环境下执行 &lt;code&gt;pip install -r requirements.txt&lt;/code&gt; 即可安装所有的依赖&lt;/p&gt;
+&lt;p&gt;但这么做有一个缺陷，pip分不清什么是项目需要的&lt;strong&gt;直接依赖&lt;/strong&gt;，什么是直接依赖引入的&lt;strong&gt;间接依赖&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;当项目体量不大时，这么做没什么问题，但一旦项目依赖变多，情况就要失控了。&lt;/p&gt;
+&lt;h3 id=&#34;pyprojecttoml&#34;&gt;pyproject.toml
+&lt;/h3&gt;&lt;p&gt;现在官方推荐的做法是通过pyproject.toml这一个配置文件来进行项目管理&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/image/image.png&#34;
+	width=&#34;501&#34;
+	height=&#34;340&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/image/image_hu_db8aae54c6e5a053.png 480w, https://ShifanShen.github.io/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/image/image_hu_4915f87ada2037e9.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;147&#34;
+		data-flex-basis=&#34;353px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;我们只需要在dependencies中添加直接依赖，再执行 &lt;code&gt;pip install -e.&lt;/code&gt; 即可安装项目依赖&lt;/p&gt;
+&lt;h3 id=&#34;uv&#34;&gt;uv
+&lt;/h3&gt;&lt;p&gt;总结一下，我们通过venv解决了环境依赖问题，用pyproject.toml管理环境中的依赖&lt;/p&gt;
+&lt;p&gt;但这套纯手工的流程属实有点麻烦，因为我们不能像以前一样通过一条pip命令直接安装依赖了&lt;/p&gt;
+&lt;p&gt;而是需要去pip软件仓库查询对应的软件包和版本号，并且添加到配置文件中&lt;/p&gt;
+&lt;p&gt;那么python有没有提供一个软件包来解决这个问题呢？——很遗憾，并没有&lt;/p&gt;
+&lt;p&gt;但有uv这样的第三方工具，可以把它理解为对venv和pip的高级封装，它在底层还是使用的pip和venv&lt;/p&gt;
+&lt;h3 id=&#34;通过uv进行项目管理&#34;&gt;通过uv进行项目管理
+&lt;/h3&gt;&lt;p&gt;回顾一下之前管理项目的步骤&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;python -m venv .venv&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;source .venv/bin/activate&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;edit pyproject.toml&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;在dependencies中添加flask ≥ 3.1.1&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;pip install -e .&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;现在有个uv，我们只需要执行 &lt;code&gt;uv add flask&lt;/code&gt; 这一条命令，就能完成所有的事情：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;自动修改pyproject.toml，将flask添加到dependencies中&lt;/li&gt;
+&lt;li&gt;检查并自动创建.venv的虚拟环境&lt;/li&gt;
+&lt;li&gt;把这个包和所有的间接依赖安装到虚拟环境中&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果我是项目的协作者，从别人手里拿到这个项目，只需要执行 &lt;code&gt;uv sync&lt;/code&gt; ，即可自动搭建好虚拟环境并安装好项目所需所有的依赖&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/image/image2.png&#34;
+	width=&#34;1608&#34;
+	height=&#34;382&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/image/image2_hu_859dec80ca8e0b6f.png 480w, https://ShifanShen.github.io/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/image/image2_hu_757592916fddcc7f.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;420&#34;
+		data-flex-basis=&#34;1010px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;通过uv管理项目同时也能兼容传统的方法 &lt;code&gt;python main.py&lt;/code&gt;，也能直接通过一条 &lt;code&gt;uv run main.py&lt;/code&gt; ：&lt;/p&gt;
+&lt;p&gt;它会在虚拟环境的上下文中执行命令，我们不需要手动激活环境，uv会自动找到环境并在其中启动项目。&lt;/p&gt;
+&lt;p&gt;uv的核心目的就是把我们从繁琐的环境和依赖中解放出来&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>少年心气是不可再生之物</title>
+        <link>https://ShifanShen.github.io/p/%E5%B0%91%E5%B9%B4%E5%BF%83%E6%B0%94%E6%98%AF%E4%B8%8D%E5%8F%AF%E5%86%8D%E7%94%9F%E4%B9%8B%E7%89%A9/</link>
+        <pubDate>Sun, 23 Nov 2025 15:57:45 +0800</pubDate>
+        
+        <guid>https://ShifanShen.github.io/p/%E5%B0%91%E5%B9%B4%E5%BF%83%E6%B0%94%E6%98%AF%E4%B8%8D%E5%8F%AF%E5%86%8D%E7%94%9F%E4%B9%8B%E7%89%A9/</guid>
+        <description>&lt;h3 id=&#34;我不信&#34;&gt;我不信
+&lt;/h3&gt;&lt;p&gt;不知觉间已经深秋了，上海的气温一夜之间降至10度以下。这么冷的天，闲来一个人在学校里乱逛，望见湖边几只大黑天鹅，让我想到了去年这个时候，也一个人来到了这所学校，同样也看见了这几只天鹅，和很美的夕阳。那时和现在的心情完全不同，一心想要考上研究生：一边期待上岸后的生活，一边焦虑着学习的进度。真正地读上了研，发现研究生的生活也没那么高尚，反而当时那股子全心全意的心气不再有了。&lt;/p&gt;
+&lt;p&gt;又想到了当时复试那段时间，也有一位朋友，她马上就要毕业了，而我即将在同样的地方开启我新的三年。我和她是完全相反的两个人，我拧巴，她果敢，我胆小，她什么都不怕。我请她带我把学校逛了个遍，我坐在电动车的后座对她说：“我以后我每次逛到哪，肯定都会想到你带我第一次来过这儿。” 果不其然，每次去到图书馆一楼接水的时候，总是想起那一暴雨天，我们一起撑着伞蹦蹦跳跳绕过地上的积水，去二食堂吃煲仔饭的画面。&lt;/p&gt;
+&lt;p&gt;22岁之前，我总觉得人生在于体验。想做什么事，就去做，想体验什么，就去体验。我们总是习惯拿社会所形成的标准去标榜一个人成功与否，我觉得人生不应该被某一标准所定义。我下定决心去考研只是因为我想体验在一个领域耕耘产出的过程，并且我坚信：提升学历是一个人成长最快的途径。&lt;/p&gt;
+&lt;p&gt;都说少年心气是不可再生之物，我一直不相信。我这么一个充满斗志的人，从小到大下定了决心要做到的目标，就一定能达成。我觉得只要尽全力，一定能实现自己的目标。&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>通过PARA构建你的第二大脑</title>
         <link>https://ShifanShen.github.io/p/%E9%80%9A%E8%BF%87para%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%BA%8C%E5%A4%A7%E8%84%91/</link>
         <pubDate>Thu, 17 Jul 2025 18:02:39 +0800</pubDate>
         
         <guid>https://ShifanShen.github.io/p/%E9%80%9A%E8%BF%87para%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%BA%8C%E5%A4%A7%E8%84%91/</guid>
         <description>&lt;img src="https://ShifanShen.github.io/p/%E9%80%9A%E8%BF%87para%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%BA%8C%E5%A4%A7%E8%84%91/image/index/buildyoursecondbrain.png" alt="Featured image of post 通过PARA构建你的第二大脑" /&gt;&lt;blockquote&gt;
-&lt;p&gt;我们所说的“管理”很多时候实质上是伪装成的拖延。我们告诉自己我们正在“准备”或者“做研究”，假装这是进步。——Tiago Forte&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;我们所说的“管理”很多时候实质上是伪装成的拖延。我们告诉自己我们正在“准备”或者“做研究”，假装这是进步。——Tiago Forte&lt;/p&gt;
+&lt;/blockquote&gt;
 &lt;p&gt;从小到大，我们尝试过各种各样的笔记方法，比如在课堂上圈画、批注、做笔记。但很少有人会在笔记完成后，进一步思考如何将这些内容系统化、框架化，最终形成一个能够快速检索所需信息的知识体系。&lt;/p&gt;
 &lt;p&gt;因此，当我们面对零散的知识点时，往往难以将其与已有知识建立联系，笔记也就失去了“记录”与“复用”的意义。&lt;/p&gt;
 &lt;h2 id=&#34;如何做笔记code法则&#34;&gt;如何做笔记：CODE法则
@@ -33,7 +141,8 @@
 &lt;/h2&gt;&lt;blockquote&gt;
 &lt;p&gt;尼克拉斯·卢曼（1927年12月8日-1998年11月6日），德国当代杰出社会学家之一，他发展了社会系统论，也是一位“宏大理论”的推崇者，主张把社会上纷繁复杂的现象全部纳入到一种的理论框架去解释。&lt;br&gt;
 主要著作《社会的社会》 、《社会的艺术》、《社会的法律》。&lt;br&gt;
-他自创的一套笔记方法，利用这套方法，他一生积累了90000个知识卡片，写了58本书和其他大量出版物。&lt;/p&gt;&lt;/blockquote&gt;
+他自创的一套笔记方法，利用这套方法，他一生积累了90000个知识卡片，写了58本书和其他大量出版物。&lt;/p&gt;
+&lt;/blockquote&gt;
 &lt;p&gt;卡片盒笔记法的工作流贯彻了&lt;strong&gt;CODE信息管理法则&lt;/strong&gt;，比起其它笔记方式最大的不同有2点：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;对笔记进行深度加工&lt;/strong&gt;&lt;/li&gt;
