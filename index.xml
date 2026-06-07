@@ -5,9 +5,308 @@
         <link>https://ShifanShen.github.io/</link>
         <description>Recent content on Stan1ey&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator>
-        <language>zh-cn</language>
+        <language>en-us</language>
         <copyright>ShifanShen</copyright>
-        <lastBuildDate>Mon, 24 Nov 2025 21:57:03 +0800</lastBuildDate><atom:link href="https://ShifanShen.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 07 Jun 2026 17:30:07 +0800</lastBuildDate><atom:link href="https://ShifanShen.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Claude Code源码解析</title>
+        <link>https://ShifanShen.github.io/p/claude-code%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/</link>
+        <pubDate>Sun, 07 Jun 2026 17:30:07 +0800</pubDate>
+        
+        <guid>https://ShifanShen.github.io/p/claude-code%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/</guid>
+        <description>&lt;img src="https://ShifanShen.github.io/p/claude-code%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/imgs/cc.png" alt="Featured image of post Claude Code源码解析" /&gt;&lt;p&gt;2026 年 3 月 31 日，Claude Code 2.1.88 的 npm 发布包意外包含了 sourcemap。事件公开后，外界据此还原出近 1,900 个 TypeScript 文件、约 51.2 万行客户端代码。Anthropic 随后确认，这是一次由人工发布流程导致的打包问题，没有暴露用户数据或凭据。&lt;/p&gt;
+&lt;p&gt;这批代码是 &lt;strong&gt;Claude Code 客户端&lt;/strong&gt;，不是 Claude 模型，也不是 Anthropic 的服务端推理系统。它展示的是终端交互、Agent 编排、工具执行、权限控制、上下文管理、记忆、压缩和 MCP 接入等工程实现，但这恰恰是最值得研究的部分。&lt;/p&gt;
+&lt;p&gt;大模型决定能力的理论上限，客户端 Harness 决定这些能力能否被稳定、安全、低成本地交付给用户。读完这套实现后，我最强烈的感受不是“Claude 的 Prompt 有多神奇”，而是：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;一个生产级 Agent，本质上是一套围绕概率模型构建的运行时系统。&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;先看claude-code全貌&#34;&gt;先看Claude Code全貌
+&lt;/h2&gt;&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/claude-code%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/imgs/01-arch-layer-stack.png&#34;
+	width=&#34;1376&#34;
+	height=&#34;768&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/claude-code%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/imgs/01-arch-layer-stack_hu_be370c848e22ff3e.png 480w, https://ShifanShen.github.io/p/claude-code%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/imgs/01-arch-layer-stack_hu_ab5544749a4a8584.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Claude Code 架构分层&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;179&#34;
+		data-flex-basis=&#34;430px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;可以把它拆成六层：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;CLI 与终端 UI 层&lt;/strong&gt;：解析参数、接收输入、流式渲染结果。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;会话管理层&lt;/strong&gt;：维护消息历史、配置、会话生命周期和压缩状态。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Agent Loop 层&lt;/strong&gt;：调用模型、解析工具请求、执行动作并决定是否继续。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;工具与权限层&lt;/strong&gt;：让模型读写文件、执行命令、访问网络，同时限制危险行为。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;上下文与记忆层&lt;/strong&gt;：把项目规则、Git 状态、会话历史和长期记忆组织成模型可用的信息。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;API 客户端层&lt;/strong&gt;：处理流式请求、重试、模型选择、Prompt Cache 和多后端适配。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;一次普通请求，会经历如下旅程：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/claude-code%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/imgs/01-arch-request-journey.png&#34;
+	width=&#34;1376&#34;
+	height=&#34;768&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/claude-code%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/imgs/01-arch-request-journey_hu_2c045c040d8e7bf8.png 480w, https://ShifanShen.github.io/p/claude-code%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/imgs/01-arch-request-journey_hu_9dc243f23adfb319.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;一次请求的完整旅程&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;179&#34;
+		data-flex-basis=&#34;430px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;用户输入先被区分为自然语言、Slash Command 或直接 Shell 命令。自然语言进入 Agent Loop 后，系统加载项目指令和环境信息，组装上下文并调用模型。模型如果返回工具调用，客户端先做权限检查，再执行工具，把结果追加回消息历史，随后再次调用模型。这个过程一直循环，直到模型结束任务，或达到轮次、Token、权限等边界。&lt;/p&gt;
+&lt;p&gt;这与普通聊天产品有一个根本区别：聊天产品的核心动作是“生成文本”，Coding Agent 的核心动作是“在不确定环境中持续推进任务”。&lt;/p&gt;
+&lt;h2 id=&#34;agent-loop&#34;&gt;Agent Loop
+&lt;/h2&gt;&lt;p&gt;大语言模型本身并不会主动读文件，也不会在命令失败后自动重试。它接收输入、生成输出，然后结束。所谓 Agent，是模型外部的程序不断重复下面这个过程：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;观察环境 -&amp;gt; 组织上下文 -&amp;gt; 调用模型 -&amp;gt; 执行动作 -&amp;gt; 返回结果 -&amp;gt; 再次决策
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Claude Code 的核心循环采用 AsyncGenerator 组织。这个选择很适合终端 Agent：模型输出可以逐段 &lt;code&gt;yield&lt;/code&gt; 给 UI；遇到权限确认时可以暂停；工具返回后又可以从原位置继续。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/claude-code%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/imgs/03-loop-six-stages.png&#34;
+	width=&#34;1376&#34;
+	height=&#34;768&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/claude-code%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/imgs/03-loop-six-stages_hu_81aead4acb56d524.png 480w, https://ShifanShen.github.io/p/claude-code%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/imgs/03-loop-six-stages_hu_d2bcf11df8eebe11.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Agent 六阶段循环&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;179&#34;
+		data-flex-basis=&#34;430px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;从还原样本看，一轮循环大致分为六个阶段：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;预取&lt;/strong&gt;：并行加载项目指令、可用 Skill、Git 状态等 I/O 信息。变化不频繁的内容会在会话内缓存，避免几十轮循环重复读取。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;构建上下文&lt;/strong&gt;：组合核心指令、项目上下文、历史消息、工具定义和当前权限状态。上下文不是静态字符串，而是每轮都会重新评估的输入结构。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;流式调用模型&lt;/strong&gt;：模型生成的文本实时显示在终端；如果模型选择行动，则返回结构化的 &lt;code&gt;tool_use&lt;/code&gt; 请求，而不是让客户端从自然语言里猜命令。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;执行工具&lt;/strong&gt;：工具调用依次经过参数校验、Hook、权限判断、工具查找、执行与结果清洗。相互独立的读取和搜索可以并行执行，单个工具失败也不必拖垮整轮任务。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;检查上下文容量&lt;/strong&gt;：工具输出往往比用户对话更占空间。系统需要估算 Token 使用量，在接近上下文上限前清理旧结果或生成摘要。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;决定继续还是结束&lt;/strong&gt;：如果模型仍要调用工具，就开始下一轮；如果返回结束信号，就把最终答案交给用户。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这套循环真正解决的不是“如何调用一次 API”，而是四个更难的问题：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;如何让每一步都有实时反馈；&lt;/li&gt;
+&lt;li&gt;如何在几十轮执行中保持状态一致；&lt;/li&gt;
+&lt;li&gt;如何让失败可恢复，而不是直接终止；&lt;/li&gt;
+&lt;li&gt;如何让子任务拥有独立上下文，又不污染主任务。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Claude Code 会为部分 Skill、压缩任务和子任务创建独立 Agent。隔离后的子 Agent 有自己的消息历史、Token 预算和工具范围，完成后只把结果返回主会话。这已经很接近操作系统的进程模型：主循环负责调度，子 Agent 负责隔离执行。&lt;/p&gt;
+&lt;h2 id=&#34;context-engineering&#34;&gt;Context Engineering
+&lt;/h2&gt;&lt;p&gt;模型的能力不只取决于参数，也取决于它在当前时刻看到了什么。&lt;/p&gt;
+&lt;p&gt;一个 Coding Agent 的上下文里同时竞争空间的内容包括：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;核心行为指令；&lt;/li&gt;
+&lt;li&gt;用户需求与历史对话；&lt;/li&gt;
+&lt;li&gt;项目规则和个人偏好；&lt;/li&gt;
+&lt;li&gt;Git 分支、变更与最近提交；&lt;/li&gt;
+&lt;li&gt;工具定义；&lt;/li&gt;
+&lt;li&gt;文件内容、搜索结果和命令输出；&lt;/li&gt;
+&lt;li&gt;长期记忆与当前任务进度。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;把所有信息一股脑塞给模型并不是好策略。上下文越长，成本越高，Prompt Cache 越容易失效，关键信息也越可能被噪声淹没。&lt;/p&gt;
+&lt;p&gt;Claude Code 的做法可以概括为三个词：&lt;strong&gt;分层、按需、稳定前缀&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id=&#34;分层先保护不能丢的信息&#34;&gt;分层：先保护不能丢的信息
+&lt;/h3&gt;&lt;p&gt;项目规则、权限边界和用户原始意图的优先级最高；最近对话次之；体积大、时效性差的旧工具输出最先被清理。这样即使长任务经历多次压缩，Agent 仍然知道“要做什么”和“不能做什么”。&lt;/p&gt;
+&lt;h3 id=&#34;按需只加载当前真正需要的内容&#34;&gt;按需：只加载当前真正需要的内容
+&lt;/h3&gt;&lt;p&gt;Claude Code 支持通过 &lt;code&gt;CLAUDE.md&lt;/code&gt;、&lt;code&gt;.claude/rules/&lt;/code&gt; 和导入机制组织项目指令，也支持自动记忆。当前公开版本会为项目维护独立的记忆目录，启动时只加载 &lt;code&gt;MEMORY.md&lt;/code&gt; 的前 200 行或前 25KB，更详细的主题笔记按需读取。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/claude-code%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/imgs/07-mem-five-layers.png&#34;
+	width=&#34;1376&#34;
+	height=&#34;768&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/claude-code%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/imgs/07-mem-five-layers_hu_45c6d8bee4b9d645.png 480w, https://ShifanShen.github.io/p/claude-code%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/imgs/07-mem-five-layers_hu_3fdfb5ee27bdac48.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;记忆体系&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;179&#34;
+		data-flex-basis=&#34;430px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;这里最重要的不是文件名，而是设计思想：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;指令记忆&lt;/strong&gt;回答“这个项目应该怎么做”；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;长期记忆&lt;/strong&gt;回答“过去有哪些经验值得下次继续使用”；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;会话状态&lt;/strong&gt;回答“当前任务已经做到哪里”。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;把三者混在一起，记忆会迅速变成垃圾场；把生命周期分开，Agent 才能长期使用。&lt;/p&gt;
+&lt;h3 id=&#34;稳定前缀让-prompt-cache-真正命中&#34;&gt;稳定前缀：让 Prompt Cache 真正命中
+&lt;/h3&gt;&lt;p&gt;模型每一轮都需要重新接收历史上下文。如果请求前缀保持一致，API 可以复用缓存，只处理新增内容。反过来，工具描述、MCP 列表或项目上下文中的动态文本一旦频繁变化，就会让后续内容全部失去缓存。&lt;/p&gt;
+&lt;p&gt;因此，Context Engineering 不只是让模型回答更准，也直接关系到延迟和成本。一个生产级 Agent 必须同时管理信息价值、注意力预算和缓存结构。&lt;/p&gt;
+&lt;h2 id=&#34;三层压缩&#34;&gt;三层压缩
+&lt;/h2&gt;&lt;p&gt;Agent 对上下文的消耗远快于普通聊天。读一个大文件、跑一次测试、抓一段日志，都可能产生数千 Token。复杂任务运行几十轮后，再大的窗口也会被填满。&lt;/p&gt;
+&lt;p&gt;Claude Code 没有等到溢出后粗暴截断，而是采用渐进式压缩。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/claude-code%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/imgs/05-compact-three-layers.png&#34;
+	width=&#34;1376&#34;
+	height=&#34;768&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/claude-code%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/imgs/05-compact-three-layers_hu_205d1ca098c1460b.png 480w, https://ShifanShen.github.io/p/claude-code%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/imgs/05-compact-three-layers_hu_978e6852c79d466.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;三层压缩体系&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;179&#34;
+		data-flex-basis=&#34;430px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;layer1-microcompact&#34;&gt;Layer1: Microcompact
+&lt;/h4&gt;&lt;p&gt;旧的文件读取、搜索结果和命令输出体积很大，而且可能已经被后续修改覆盖。系统优先清理这类低价值内容，保留用户消息、关键回复与近期结果。&lt;/p&gt;
+&lt;h4 id=&#34;layer2-session-memory&#34;&gt;Layer2: Session Memory
+&lt;/h4&gt;&lt;p&gt;把重要决策、已修改文件、错误原因和待办事项提取成更紧凑的状态，再删除已被记录的原始消息。这类似于程序员在调试过程中写工作日志。&lt;/p&gt;
+&lt;h4 id=&#34;layer3-full-compact&#34;&gt;Layer3: Full Compact
+&lt;/h4&gt;&lt;p&gt;当局部清理仍不够时，独立的压缩 Agent 会把历史整理成结构化摘要，保留用户目标、关键技术信息、文件变更、错误与修复、当前进度和下一步。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;这里有两个值得复用的技巧。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;第一，摘要不只回答之前发生了什么，还要回答现在正在做什么和下一步是什么。只做回顾性摘要，Agent 压缩后很容易失去任务方向。&lt;/p&gt;
+&lt;p&gt;第二，让模型先分析、再输出正式摘要，最终只保留摘要。中间分析可以提升质量，却不必继续占用主上下文。&lt;/p&gt;
+&lt;p&gt;更重要的是，压缩流程本身也必须被当成生产系统来治理：需要失败上限、递归保护、状态重置和可观测性。还原样本中的事故注释显示，自动压缩曾因缺少熔断机制反复失败并持续重试。最终的修复原则很朴素：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;任何无人值守的自动流程，都必须有预算、超时和熔断器。&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;tool-skill--mcp&#34;&gt;Tool, Skill , MCP
+&lt;/h2&gt;&lt;p&gt;如果 Agent Loop 是调度器，工具就是系统调用。&lt;/p&gt;
+&lt;p&gt;Claude Code 把文件读取、精确编辑、完整写入、内容搜索、文件匹配、Shell、Web、Notebook、子 Agent 等能力拆成独立工具。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/claude-code%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/imgs/08-tools-pipeline.png&#34;
+	width=&#34;1376&#34;
+	height=&#34;768&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/claude-code%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/imgs/08-tools-pipeline_hu_d901a8190db7cbe5.png 480w, https://ShifanShen.github.io/p/claude-code%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/imgs/08-tools-pipeline_hu_6c4b3f863f800bc2.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;工具执行流水线&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;179&#34;
+		data-flex-basis=&#34;430px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;一条成熟的工具流水线至少包含：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;模型请求
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  -&amp;gt; 参数校验与 PreToolUse Hook
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  -&amp;gt; 权限规则与安全检查
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  -&amp;gt; 工具执行
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  -&amp;gt; 结果截断、脱敏与 PostToolUse Hook
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  -&amp;gt; tool_result 返回模型
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;skill&#34;&gt;Skill
+&lt;/h3&gt;&lt;p&gt;Skill 的入口是 &lt;code&gt;SKILL.md&lt;/code&gt;。它不是传统意义上的二进制插件，而是一份可包含脚本、模板和示例的任务说明。系统先把 Skill 的名称和描述提供给模型，只有确认需要时才加载完整内容，避免所有 Skill 同时挤占上下文。&lt;/p&gt;
+&lt;p&gt;Skill 还可以选择在独立上下文中运行，并限定可用工具。这种设计兼顾了低门槛、按需加载和执行隔离。&lt;/p&gt;
+&lt;h3 id=&#34;mcp&#34;&gt;MCP
+&lt;/h3&gt;&lt;p&gt;MCP 解决的是生态接入问题。没有协议时，GitHub、Slack、数据库和浏览器都要分别适配；有了 MCP，Agent 可以通过统一接口发现和调用外部工具。&lt;/p&gt;
+&lt;p&gt;需要区分内部实现与公开产品接口：还原样本中可以看到多种配置来源和传输适配分支；当前公开文档面向用户提供 &lt;code&gt;local&lt;/code&gt;、&lt;code&gt;project&lt;/code&gt;、&lt;code&gt;user&lt;/code&gt; 三种主要作用域，并支持企业托管配置，常用传输方式包括本地 &lt;code&gt;stdio&lt;/code&gt;、远程 HTTP 和仍在兼容的 SSE。&lt;/p&gt;
+&lt;p&gt;MCP 真正困难的地方不是发送一段 JSON，而是连接生命周期、认证、超时重试、动态工具发现、配置合并和第三方服务隔离。协议代码越接近生产，边界条件往往越多。&lt;/p&gt;
+&lt;h2 id=&#34;权限与沙箱&#34;&gt;权限与沙箱
+&lt;/h2&gt;&lt;p&gt;传统程序的执行路径由代码决定；Agent 的路径由模型在运行时选择。再加上文件、网页和 MCP 返回内容都可能携带 Prompt Injection，&lt;strong&gt;安全控制不能只靠静态 Code Review，必须发生在每次行动之前。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/claude-code%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/imgs/12-sec-four-layers.png&#34;
+	width=&#34;1376&#34;
+	height=&#34;768&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/claude-code%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/imgs/12-sec-four-layers_hu_b8870842129453d1.png 480w, https://ShifanShen.github.io/p/claude-code%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/imgs/12-sec-four-layers_hu_5a546b91245105c2.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Agent 安全纵深防御&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;179&#34;
+		data-flex-basis=&#34;430px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Claude Code 的安全体系可以概括为四层。&lt;/p&gt;
+&lt;h4 id=&#34;1-权限模式&#34;&gt;1. 权限模式
+&lt;/h4&gt;&lt;p&gt;还原样本重点展现了 &lt;code&gt;default&lt;/code&gt;、&lt;code&gt;auto&lt;/code&gt; 和 &lt;code&gt;plan&lt;/code&gt; 等路径。当前公开文档中的模式已经扩展为：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;default&lt;/code&gt;：读取可直接执行，修改和命令通常需要确认；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;acceptEdits&lt;/code&gt;：自动接受工作区内的文件修改和部分常见文件操作；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;plan&lt;/code&gt;：以探索和规划为主，不修改源码；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;auto&lt;/code&gt;：通过后台分类器评估工具调用；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;dontAsk&lt;/code&gt;：只允许预先批准的动作，其余直接拒绝；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;bypassPermissions&lt;/code&gt;：跳过大多数权限检查，只应在隔离环境中使用。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这说明权限不是一个简单的开关，而是“监督强度”的连续谱。&lt;/p&gt;
+&lt;h4 id=&#34;2-规则与分类器&#34;&gt;2. 规则与分类器
+&lt;/h4&gt;&lt;p&gt;样本中存在一组针对解释器、Shell 包装器和高风险命令模式的默认分类规则。它们不应被理解成在所有模式下都绝对不可绕过的静态黑名单；实际结果还受权限模式、用户规则、受保护路径和显式绕过配置影响。&lt;/p&gt;
+&lt;p&gt;硬编码规则负责已知风险，模型分类器负责语义风险。两者结合，比只用正则或只相信另一个模型更稳妥。&lt;/p&gt;
+&lt;h4 id=&#34;3-受保护路径与权限规则&#34;&gt;3. 受保护路径与权限规则
+&lt;/h4&gt;&lt;p&gt;&lt;code&gt;.git&lt;/code&gt;、&lt;code&gt;.claude&lt;/code&gt;、Shell 配置和 MCP 配置等路径需要更严格的写入控制。用户和团队还可以配置 &lt;code&gt;allow&lt;/code&gt;、&lt;code&gt;ask&lt;/code&gt;、&lt;code&gt;deny&lt;/code&gt; 规则，把安全策略固化到项目配置中。&lt;/p&gt;
+&lt;h4 id=&#34;4-操作系统级沙箱&#34;&gt;4. 操作系统级沙箱
+&lt;/h4&gt;&lt;p&gt;真正可靠的边界不能只靠模型自觉。Claude Code 的 Bash 沙箱使用操作系统能力限制文件系统和网络访问：工作区内可写，其他路径和新网络域名按规则拦截或请求批准。权限系统决定“能不能调用工具”，沙箱决定“命令运行后实际上能碰到什么”，两者互补。&lt;/p&gt;
+&lt;h2 id=&#34;feature-flag-展示的不是承诺而是探索空间&#34;&gt;Feature Flag 展示的不是承诺，而是探索空间
+&lt;/h2&gt;&lt;p&gt;还原样本中有大量 Feature Flag，涉及自主运行、多 Agent 协调、上下文管理、自动验证、工作流脚本、语音和远程触发等方向。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/claude-code%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/imgs/10-future-82-flags.png&#34;
+	width=&#34;1376&#34;
+	height=&#34;768&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/claude-code%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/imgs/10-future-82-flags_hu_24a15fc0342ec06d.png 480w, https://ShifanShen.github.io/p/claude-code%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/imgs/10-future-82-flags_hu_ce726bdc32ab3eb7.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Feature Flag 展示的探索方向&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;179&#34;
+		data-flex-basis=&#34;430px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;如果只看方向，可以归纳出四个明显趋势：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;更长时间的自主运行&lt;/strong&gt;：Agent 从“一问一答”走向围绕目标持续工作。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;多 Agent 协作&lt;/strong&gt;：主 Agent 负责拆解、调度、汇总和验证。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;上下文生命周期管理&lt;/strong&gt;：从单次有损摘要走向快照、分支和按需恢复。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;确定性工作流回归&lt;/strong&gt;：对发布、审计等高风险任务，用固定步骤约束模型的随机性。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这也解释了为什么 Harness Engineering 会长期存在。模型越强，Agent 能做的事情越多，调度、安全、成本和可观测性反而越重要。&lt;/p&gt;
+&lt;h2 id=&#34;从源码事件重新理解-ai-coding-的-code-review&#34;&gt;从源码事件重新理解 AI Coding 的 Code Review
+&lt;/h2&gt;&lt;p&gt;这次事件最直接的教训，不是“AI 写的代码不可靠”。目前没有足够证据仅凭代码风格判断这些代码由谁编写。Anthropic 对外确认的是发布打包流程出现了人工错误，Claude Code 负责人也提到本应进一步自动化的手工发布步骤。&lt;/p&gt;
+&lt;p&gt;真正值得关注的是：一个系统即使类型检查通过、功能完善、错误处理充分，也可能在构建与发布阶段因为一个遗漏暴露整个客户端源码。&lt;/p&gt;
+&lt;p&gt;还原样本中，一个入口文件超过 5,000 行、依赖树包含数百个包。这些现象值得做架构和供应链审查，但同样不能直接证明代码由 AI 生成。更稳妥的结论是：随着功能增长，复杂度会集中到入口模块和第三方依赖中，团队需要主动设置文件规模、依赖准入和模块边界。&lt;/p&gt;
+&lt;p&gt;因此，AI Coding 时代的 Review 重心需要上移。&lt;/p&gt;
+&lt;p&gt;人的价值正在从亲手敲出每一行代码，转向定义约束、验证结果、设计系统并&lt;strong&gt;对后果负责&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;参考资料&#34;&gt;参考资料
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/anneheartrecord/claude-code-docs&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;anneheartrecord/claude-code-docs: claude-code源码解读&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://code.claude.com/docs/en/permission-modes&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Claude Code 权限模式&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://code.claude.com/docs/en/memory&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Claude Code 记忆机制&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://code.claude.com/docs/en/mcp&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Claude Code MCP 集成&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://code.claude.com/docs/en/skills&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Claude Code Skill 系统&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://code.claude.com/docs/en/sandboxing&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Claude Code 沙箱机制&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://code.claude.com/docs/en/prompt-caching&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Claude Code Prompt Cache&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://code.claude.com/docs/en/how-claude-code-works&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Claude Code 工作原理与上下文管理&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.itpro.com/security/data-breaches/there-was-a-manual-deploy-step-that-should-have-been-better-automated-claude-code-creator-confirms-cause-of-massive-source-code-leak&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Anthropic 对 Claude Code 发布包事件的说明与背景&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        </item>
+        <item>
         <title>Uv：一个用Rust编写的极速Python包和项目管理工具</title>
         <link>https://ShifanShen.github.io/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/</link>
         <pubDate>Mon, 24 Nov 2025 21:57:03 +0800</pubDate>
@@ -52,7 +351,7 @@
 &lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/image/image.png&#34;
 	width=&#34;501&#34;
 	height=&#34;340&#34;
-	srcset=&#34;https://ShifanShen.github.io/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/image/image_hu_db8aae54c6e5a053.png 480w, https://ShifanShen.github.io/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/image/image_hu_4915f87ada2037e9.png 1024w&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/image/image_hu_407cc9c238006b06.png 480w, https://ShifanShen.github.io/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/image/image_hu_8d935a48b7097f86.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -87,7 +386,7 @@
 &lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/image/image2.png&#34;
 	width=&#34;1608&#34;
 	height=&#34;382&#34;
-	srcset=&#34;https://ShifanShen.github.io/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/image/image2_hu_859dec80ca8e0b6f.png 480w, https://ShifanShen.github.io/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/image/image2_hu_757592916fddcc7f.png 1024w&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/image/image2_hu_ec8bf89e5628c829.png 480w, https://ShifanShen.github.io/p/uv%E4%B8%80%E4%B8%AA%E7%94%A8rust%E7%BC%96%E5%86%99%E7%9A%84%E6%9E%81%E9%80%9Fpython%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/image/image2_hu_beb1e1255dee2f00.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -175,7 +474,7 @@
 &lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E9%80%9A%E8%BF%87para%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%BA%8C%E5%A4%A7%E8%84%91/image/index/20250717164006.png&#34;
 	width=&#34;1884&#34;
 	height=&#34;1503&#34;
-	srcset=&#34;https://ShifanShen.github.io/p/%E9%80%9A%E8%BF%87para%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%BA%8C%E5%A4%A7%E8%84%91/image/index/20250717164006_hu_4dbfc17bf8f87f10.png 480w, https://ShifanShen.github.io/p/%E9%80%9A%E8%BF%87para%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%BA%8C%E5%A4%A7%E8%84%91/image/index/20250717164006_hu_889b2cc6931c4024.png 1024w&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/%E9%80%9A%E8%BF%87para%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%BA%8C%E5%A4%A7%E8%84%91/image/index/20250717164006_hu_38a4376051786f19.png 480w, https://ShifanShen.github.io/p/%E9%80%9A%E8%BF%87para%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%BA%8C%E5%A4%A7%E8%84%91/image/index/20250717164006_hu_29b08f327f711562.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -318,7 +617,7 @@
 &lt;img src=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740692546.png&#34;
 	width=&#34;1675&#34;
 	height=&#34;1111&#34;
-	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740692546_hu_538dd2fdec70e693.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740692546_hu_c3d72649c7491488.png 1024w&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740692546_hu_7a1f53b761e765e5.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740692546_hu_de142ffa141eb5ae.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -338,7 +637,7 @@
 &lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740621782.png&#34;
 	width=&#34;1383&#34;
 	height=&#34;935&#34;
-	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740621782_hu_9897c763c4607a15.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740621782_hu_5050a397e3afdb5a.png 1024w&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740621782_hu_cc27a68855d725e0.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740621782_hu_3f4b758ed59bb375.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -355,7 +654,7 @@
 &lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740853996.png&#34;
 	width=&#34;1785&#34;
 	height=&#34;583&#34;
-	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740853996_hu_a1b68dd130f447b6.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740853996_hu_44a69c303cb7c484.png 1024w&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740853996_hu_e83e29b2e7e7c17a.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740853996_hu_189964085f511e45.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -368,7 +667,7 @@
 &lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740988592.png&#34;
 	width=&#34;1727&#34;
 	height=&#34;1083&#34;
-	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740988592_hu_af1061f40ce5297.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740988592_hu_bf33f0df01756335.png 1024w&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740988592_hu_846b2b4feb893cc5.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750740988592_hu_2216443b5645d860.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -383,7 +682,7 @@
 &lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741083101.png&#34;
 	width=&#34;2421&#34;
 	height=&#34;1459&#34;
-	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741083101_hu_8488b9ab0c70780d.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741083101_hu_ce31fa9a51ffc455.png 1024w&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741083101_hu_aedcd4165c8fccc3.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741083101_hu_e846a05cb729479d.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -397,7 +696,7 @@
 &lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741188559.png&#34;
 	width=&#34;1111&#34;
 	height=&#34;915&#34;
-	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741188559_hu_57fb412b2b707ef5.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741188559_hu_83877d5eb9468451.png 1024w&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741188559_hu_d3dcdde921ef96d4.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741188559_hu_257be1433a082b20.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -410,7 +709,7 @@
 &lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741233760.png&#34;
 	width=&#34;1771&#34;
 	height=&#34;909&#34;
-	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741233760_hu_3ef0da832268f40d.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741233760_hu_13a357e10b078beb.png 1024w&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741233760_hu_f8f9c7f86dd96dba.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741233760_hu_a28a6d9e33504b5b.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -431,7 +730,7 @@
 &lt;img src=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741646620.png&#34;
 	width=&#34;1383&#34;
 	height=&#34;321&#34;
-	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741646620_hu_dc69b39ed43cffe2.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741646620_hu_94565756185908ef.png 1024w&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741646620_hu_b237c5b4cef5130c.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741646620_hu_4ecabcb1cca6018b.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -447,7 +746,7 @@
 &lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741659080.png&#34;
 	width=&#34;1347&#34;
 	height=&#34;489&#34;
-	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741659080_hu_85be8e98ae5ded67.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741659080_hu_23c78bdc6933abb2.png 1024w&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741659080_hu_223890750624b70f.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741659080_hu_5e0f0f7b3cdeda6a.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -459,7 +758,7 @@
 &lt;p&gt;&lt;img src=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741673895.png&#34;
 	width=&#34;1341&#34;
 	height=&#34;747&#34;
-	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741673895_hu_efb1b3d0fdbb3606.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741673895_hu_b367b7499357b63f.png 1024w&#34;
+	srcset=&#34;https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741673895_hu_990c84cf19692c03.png 480w, https://ShifanShen.github.io/p/%E5%9F%BA%E4%BA%8Ehugo%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2gihubpages%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image/index/1750741673895_hu_4f81913efedf6763.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -520,15 +819,15 @@
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;deploy&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;deploy&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 代码提交到main分支时触发github action&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;on&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;# 代码提交到main分支时触发github action&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;on&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;push&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;branches&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;main&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;jobs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;jobs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;deploy&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;runs-on&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;ubuntu-latest&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;steps&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
@@ -579,12 +878,12 @@
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;# 自动生成的文件&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;l&#34;&gt;public&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;l&#34;&gt;resources&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;l&#34;&gt;.hugo_build.lock&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;l&#34;&gt;public&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;l&#34;&gt;resources&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;l&#34;&gt;.hugo_build.lock&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# hugo命令&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;l&#34;&gt;hugo.exe&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;# hugo命令&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;l&#34;&gt;hugo.exe&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;ul&gt;
@@ -601,11 +900,11 @@
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;l&#34;&gt;git init&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;l&#34;&gt;git add .&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;l&#34;&gt;git commit -m &amp;#34;first commit&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;l&#34;&gt;git branch -M main&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;l&#34;&gt;git remote add origin {你的github仓库地址}&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;l&#34;&gt;git push -u origin main&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;l&#34;&gt;git add .&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;l&#34;&gt;git commit -m &amp;#34;first commit&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;l&#34;&gt;git branch -M main&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;l&#34;&gt;git remote add origin {你的github仓库地址}&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;l&#34;&gt;git push -u origin main&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;之后博客更新部署只需要修改好你的文档，直接 push 到你的仓库，不需要手动去部署&lt;/p&gt;
